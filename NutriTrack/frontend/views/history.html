@@ -1,0 +1,82 @@
+
+<section class="container-fluid p-0">
+    <div class="mb-4">
+        <p class="text-success fw-semibold small mb-1">YOUR PROGRESS</p>
+        <h2 class="fw-bold mb-2">Nutrition History</h2>
+        <p class="text-secondary">Review your previous food diary entries.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-2">TRACKING PERIOD</p>
+                    <h4 class="fw-bold">Last 7 days</h4>
+                    <p class="text-secondary mb-0">
+                        Your daily history will appear as entries are recorded.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-2">RECORD STATUS</p>
+                    <h4 class="fw-bold">No history yet</h4>
+                    <p class="text-secondary mb-0">
+                        Start by adding food to your meal diary.
+                    </p>
+                    <button class="btn btn-success mt-3"
+                            type="button" data-page="diary">
+                        Open diary
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between
+                        align-items-center gap-3 mb-3">
+                <div>
+                    <h5 class="fw-bold mb-1">Previous entries</h5>
+                    <p class="text-secondary small mb-0">
+                        Your recorded days will be listed here.
+                    </p>
+                </div>
+                <select class="form-select" style="max-width: 180px;"
+                        aria-label="Select history period">
+                    <option>Last 7 days</option>
+                    <option>Last 30 days</option>
+                    <option>All time</option>
+                </select>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Meals</th>
+                            <th>Foods</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="text-center py-5">
+                                <div class="empty-icon">▤</div>
+                                <h6 class="fw-bold mt-3">Nothing to show yet</h6>
+                                <p class="text-secondary small mb-0">
+                                    Your history will appear here once you start
+                                    recording meals.
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

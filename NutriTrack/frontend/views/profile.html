@@ -1,0 +1,105 @@
+
+<section class="container-fluid p-0">
+    <div class="mb-4">
+        <p class="text-success fw-semibold small mb-1">YOUR ACCOUNT</p>
+        <h2 class="fw-bold mb-2">Profile & Goals</h2>
+        <p class="text-secondary">Manage your profile and personal preferences.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div class="profile-avatar">U</div>
+                    <h5 class="fw-bold mt-3 mb-1">Your Profile</h5>
+                    <p class="text-secondary small">NutriTrack member</p>
+                    <span class="badge rounded-pill text-bg-success-subtle">
+                        Local demo
+                    </span>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="fw-bold">About your data</h6>
+                    <p class="text-secondary small mb-0">
+                        This is a frontend prototype. Profile details will not
+                        be saved to a server at this stage.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-1">Personal information</h5>
+                    <p class="text-secondary small mb-4">
+                        Enter the details you want to use in the application.
+                    </p>
+
+                    <form id="profileForm">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="username" class="form-label">
+                                    Display name
+                                </label>
+                                <input id="username" name="username"
+                                       class="form-control" type="text"
+                                       placeholder="Your name">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="email" class="form-label">
+                                    Email address
+                                </label>
+                                <input id="email" name="email"
+                                       class="form-control" type="email"
+                                       placeholder="you@example.com">
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h6 class="fw-bold mb-3">Nutrition preferences</h6>
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="goalType" class="form-label">
+                                    Main focus
+                                </label>
+                                <select id="goalType" class="form-select">
+                                    <option value="">Choose a focus</option>
+                                    <option>Balanced nutrition</option>
+                                    <option>Learn about food</option>
+                                    <option>Build consistent meal habits</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="dietPreference" class="form-label">
+                                    Dietary preference
+                                </label>
+                                <select id="dietPreference" class="form-select">
+                                    <option value="">No preference selected</option>
+                                    <option>Vegetarian</option>
+                                    <option>Vegan</option>
+                                    <option>Omnivore</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                Save changes
+                            </button>
+                            <button type="reset" class="btn btn-light border">
+                                Reset form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

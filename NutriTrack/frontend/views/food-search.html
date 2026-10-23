@@ -1,0 +1,86 @@
+
+
+<section class="container-fluid p-0">
+    <div class="mb-4">
+        <p class="text-success fw-semibold small mb-1">FOOD DATABASE</p>
+        <h2 class="fw-bold mb-2">Food Search</h2>
+        <p class="text-secondary">Explore foods and their nutritional information.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <label for="foodQuery" class="form-label fw-semibold">
+                Search for food
+            </label>
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <input id="foodQuery" class="form-control"
+                       type="search" placeholder="e.g. apple, oats, yogurt">
+                <button id="searchFoodButton" class="btn btn-success"
+                        type="button">Search</button>
+            </div>
+            <p class="small text-secondary mt-2 mb-0">
+                Nutrition values will be connected to a food database API in a later stage.
+            </p>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <button class="btn btn-success" type="button">All foods</button>
+        <button class="btn btn-outline-success" type="button">Fruits</button>
+        <button class="btn btn-outline-success" type="button">Vegetables</button>
+        <button class="btn btn-outline-success" type="button">Protein</button>
+        <button class="btn btn-outline-success" type="button">Grains</button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0">Popular foods</h5>
+        <span class="text-secondary small">Example data</span>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 shadow-sm food-card">
+                <div class="card-body">
+                    <div class="food-icon">🍎</div>
+                    <h5 class="fw-bold mt-3">Apple</h5>
+                    <p class="text-secondary small">Fruit · Per 100 g</p>
+                    <div class="nutrition-value">52 kcal</div>
+                    <button class="btn btn-success w-100 mt-3"
+                            type="button" data-page="diary">
+                        View meal diary
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 shadow-sm food-card">
+                <div class="card-body">
+                    <div class="food-icon">🥚</div>
+                    <h5 class="fw-bold mt-3">Boiled egg</h5>
+                    <p class="text-secondary small">Protein · Per 100 g</p>
+                    <div class="nutrition-value">155 kcal</div>
+                    <button class="btn btn-success w-100 mt-3"
+                            type="button" data-page="diary">
+                        View meal diary
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 shadow-sm food-card">
+                <div class="card-body">
+                    <div class="food-icon">🥣</div>
+                    <h5 class="fw-bold mt-3">Oats</h5>
+                    <p class="text-secondary small">Grains · Per 100 g</p>
+                    <div class="nutrition-value">389 kcal</div>
+                    <button class="btn btn-success w-100 mt-3"
+                            type="button" data-page="diary">
+                        View meal diary
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
