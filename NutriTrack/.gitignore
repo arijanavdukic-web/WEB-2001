@@ -21,3 +21,6 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+
+/backend/config/config.php
