@@ -3,18 +3,24 @@
     <div class="mb-4">
         <p class="text-success fw-semibold small mb-1">YOUR ACCOUNT</p>
         <h2 class="fw-bold mb-2">Profile & Goals</h2>
-        <p class="text-secondary">Manage your profile and personal preferences.</p>
+        <p class="text-secondary">Manage your profile and daily nutrition targets.</p>
     </div>
+
+    <div id="profileMessage" class="small mb-3"></div>
 
     <div class="row g-4">
         <div class="col-12 col-xl-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body text-center py-4">
-                    <div class="profile-avatar">U</div>
-                    <h5 class="fw-bold mt-3 mb-1">Your Profile</h5>
-                    <p class="text-secondary small">NutriTrack member</p>
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <h5 class="fw-bold mt-3 mb-1" id="profileDisplayName">
+                        Loading profile...
+                    </h5>
+                    <p class="text-secondary small mb-2" id="profileDisplayEmail">
+                        Please wait
+                    </p>
                     <span class="badge rounded-pill text-bg-success-subtle">
-                        Local demo
+                        NutriTrack member
                     </span>
                 </div>
             </div>
@@ -23,8 +29,8 @@
                 <div class="card-body">
                     <h6 class="fw-bold">About your data</h6>
                     <p class="text-secondary small mb-0">
-                        This is a frontend prototype. Profile details will not
-                        be saved to a server at this stage.
+                        Your profile and nutrition targets are saved in the
+                        NutriTrack database.
                     </p>
                 </div>
             </div>
@@ -35,7 +41,7 @@
                 <div class="card-body">
                     <h5 class="fw-bold mb-1">Personal information</h5>
                     <p class="text-secondary small mb-4">
-                        Enter the details you want to use in the application.
+                        Update your account details.
                     </p>
 
                     <form id="profileForm">
@@ -46,7 +52,7 @@
                                 </label>
                                 <input id="username" name="username"
                                        class="form-control" type="text"
-                                       placeholder="Your name">
+                                       maxlength="100" required>
                             </div>
 
                             <div class="col-12 col-md-6">
@@ -55,42 +61,45 @@
                                 </label>
                                 <input id="email" name="email"
                                        class="form-control" type="email"
-                                       placeholder="you@example.com">
+                                       maxlength="150" required>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <h6 class="fw-bold mb-3">Nutrition preferences</h6>
+                        <h5 class="fw-bold mb-1">Daily nutrition goals</h5>
+                        <p class="text-secondary small mb-4">
+                            Manage the targets saved in your account.
+                        </p>
 
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
-                                <label for="goalType" class="form-label">
-                                    Main focus
+                                <label for="calorieGoal" class="form-label">
+                                    Daily calorie target (kcal)
                                 </label>
-                                <select id="goalType" class="form-select">
-                                    <option value="">Choose a focus</option>
-                                    <option>Balanced nutrition</option>
-                                    <option>Learn about food</option>
-                                    <option>Build consistent meal habits</option>
-                                </select>
+                                <input id="calorieGoal" class="form-control"
+                                       type="number" min="1" max="100000"
+                                       step="1" placeholder="Enter target">
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label for="dietPreference" class="form-label">
-                                    Dietary preference
+                                <label for="proteinGoal" class="form-label">
+                                    Daily protein target (g)
                                 </label>
-                                <select id="dietPreference" class="form-select">
-                                    <option value="">No preference selected</option>
-                                    <option>Vegetarian</option>
-                                    <option>Vegan</option>
-                                    <option>Omnivore</option>
-                                </select>
+                                <input id="proteinGoal" class="form-control"
+                                       type="number" min="1" max="10000"
+                                       step="0.1" placeholder="Enter target">
                             </div>
                         </div>
 
+                        <p class="text-secondary small mt-3 mb-0">
+                            These are editable tracking targets, not
+                            personalized health recommendations.
+                        </p>
+
                         <div class="d-flex flex-wrap gap-2 mt-4">
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-success"
+                                    id="saveProfileButton">
                                 Save changes
                             </button>
                             <button type="reset" class="btn btn-light border">

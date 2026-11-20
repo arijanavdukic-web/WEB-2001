@@ -1,0 +1,713 @@
+openapi: 3.0.3
+info:
+  title: NutriTrack API
+  version: 1.0.0
+  description: |
+    REST API for NutriTrack. The API provides CRUD operations for users, foods,
+    meals, meal entries, daily summaries and nutrition goals, plus food search
+    through the USDA FoodData Central service.
+servers:
+  - url: /web2001/backend/public
+    description: Local WAMP installation
+tags:
+  - name: General
+  - name: Users
+  - name: Foods
+  - name: Meals
+  - name: Meal Entries
+  - name: Daily Summaries
+  - name: Nutrition Goals
+  - name: External Food Search
+paths:
+  /api:
+    get:
+      tags: [General]
+      summary: Check API status
+      responses:
+        '200':
+          description: API is running.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiStatus'
+  /api/users:
+    get:
+      tags: [Users]
+      summary: Get all users
+      description: Returns public user fields only. Password hashes are never included.
+      responses:
+        '200':
+          description: User list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  users:
+                    type: array
+                    items: { $ref: '#/components/schemas/User' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    post:
+      tags: [Users]
+      summary: Register or log in
+      description: Set action to register or login. Login returns HTTP 401 for invalid credentials.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/UserRegistration'
+                - $ref: '#/components/schemas/UserLogin'
+      responses:
+        '201':
+          description: User registered.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: User registered successfully. }
+                  user_id: { type: integer, example: 12 }
+        '200':
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: Login successful. }
+                  user: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401':
+          description: Invalid email or password.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/users/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      responses:
+        '200':
+          description: User found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  user: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    put:
+      tags: [Users]
+      summary: Update user
+      description: Supports name, email and optional password fields. Password is stored as a hash.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserUpdate' }
+      responses:
+        '200': { description: User updated. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    delete:
+      tags: [Users]
+      summary: Delete user
+      description: Database cascade rules also delete related meals, summaries and nutrition goals.
+      responses:
+        '200': { description: User deleted. }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/foods:
+    get:
+      tags: [Foods]
+      summary: Get, search or find foods
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema: { type: string }
+          description: Search food names. When provided, this takes precedence over id.
+        - name: id
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1 }
+          description: Return one food by its ID.
+      responses:
+        '200':
+          description: Food record or list of foods.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items: { $ref: '#/components/schemas/Food' }
+                  - $ref: '#/components/schemas/Food'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    post:
+      tags: [Foods]
+      summary: Create food
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FoodInput' }
+      responses:
+        '201':
+          description: Food created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  food_id: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/foods/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [Foods]
+      summary: Update food
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FoodUpdate' }
+      responses:
+        '200': { description: Food updated. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    delete:
+      tags: [Foods]
+      summary: Delete food
+      responses:
+        '200': { description: Food deleted. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/meals:
+    get:
+      tags: [Meals]
+      summary: Get meals, optionally filtered by user or ID
+      parameters:
+        - name: user_id
+          in: query
+          schema: { type: integer, minimum: 1 }
+          description: Return meals belonging to a user. Takes precedence over id.
+        - name: id
+          in: query
+          schema: { type: integer, minimum: 1 }
+          description: Return one meal.
+      responses:
+        '200':
+          description: Meal record or list of meals.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items: { $ref: '#/components/schemas/Meal' }
+                  - $ref: '#/components/schemas/Meal'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    post:
+      tags: [Meals]
+      summary: Create meal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealInput' }
+      responses:
+        '201':
+          description: Meal created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  meal_id: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/meals/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [Meals]
+      summary: Update meal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealUpdate' }
+      responses:
+        '200': { description: Meal updated. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    delete:
+      tags: [Meals]
+      summary: Delete meal
+      responses:
+        '200': { description: Meal deleted. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/meal-entries:
+    get:
+      tags: [Meal Entries]
+      summary: Get meal entries, optionally filtered by meal or ID
+      parameters:
+        - name: meal_id
+          in: query
+          schema: { type: integer, minimum: 1 }
+          description: Return entries for a meal. Takes precedence over id.
+        - name: id
+          in: query
+          schema: { type: integer, minimum: 1 }
+          description: Return one meal entry.
+      responses:
+        '200':
+          description: Entry record or list of entries.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items: { $ref: '#/components/schemas/MealEntry' }
+                  - $ref: '#/components/schemas/MealEntry'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    post:
+      tags: [Meal Entries]
+      summary: Add food to a meal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealEntryInput' }
+      responses:
+        '201':
+          description: Food added to meal.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  entry_id: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/meal-entries/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [Meal Entries]
+      summary: Update meal entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealEntryUpdate' }
+      responses:
+        '200': { description: Meal entry updated. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    delete:
+      tags: [Meal Entries]
+      summary: Remove food from meal
+      responses:
+        '200': { description: Meal entry deleted. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/daily-summaries:
+    get:
+      tags: [Daily Summaries]
+      summary: Get daily summaries with optional filters
+      parameters:
+        - name: user_id
+          in: query
+          schema: { type: integer, minimum: 1 }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+          description: Used together with user_id to find a specific user's summary for a date.
+        - name: id
+          in: query
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Summary record or list of summaries.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items: { $ref: '#/components/schemas/DailySummary' }
+                  - $ref: '#/components/schemas/DailySummary'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    post:
+      tags: [Daily Summaries]
+      summary: Create daily summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DailySummaryInput' }
+      responses:
+        '201':
+          description: Daily summary created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  summary_id: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/daily-summaries/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [Daily Summaries]
+      summary: Update daily summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DailySummaryUpdate' }
+      responses:
+        '200': { description: Daily summary updated. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    delete:
+      tags: [Daily Summaries]
+      summary: Delete daily summary
+      responses:
+        '200': { description: Daily summary deleted. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/nutrition-goals:
+    get:
+      tags: [Nutrition Goals]
+      summary: Get nutrition goals, optionally filtered by user or ID
+      parameters:
+        - name: user_id
+          in: query
+          schema: { type: integer, minimum: 1 }
+        - name: id
+          in: query
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Goal record or list of goals.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items: { $ref: '#/components/schemas/NutritionGoal' }
+                  - $ref: '#/components/schemas/NutritionGoal'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    post:
+      tags: [Nutrition Goals]
+      summary: Create nutrition goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NutritionGoalInput' }
+      responses:
+        '201':
+          description: Nutrition goal created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  goal_id: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/nutrition-goals/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [Nutrition Goals]
+      summary: Update nutrition goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NutritionGoalUpdate' }
+      responses:
+        '200': { description: Nutrition goal updated. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    delete:
+      tags: [Nutrition Goals]
+      summary: Delete nutrition goal
+      responses:
+        '200': { description: Nutrition goal deleted. }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/external/foods:
+    get:
+      tags: [External Food Search]
+      summary: Search USDA FoodData Central
+      description: The backend uses the configured USDA API key; the key is not supplied by the client.
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { type: string, minLength: 1 }
+          example: banana
+        - name: pageSize
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 25, default: 10 }
+      responses:
+        '200':
+          description: Search results mapped to NutriTrack food fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  count: { type: integer, example: 2 }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ExternalFood' }
+        '400':
+          description: Missing query or invalid page size.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExternalError' }
+        '502':
+          description: External food service unavailable or returned an error.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExternalError' }
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+  responses:
+    BadRequest:
+      description: Invalid input or business rule violation.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Requested record was not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Unexpected server error.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    ApiStatus:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string, example: NutriTrack API is running with FlightPHP. }
+    Error:
+      type: object
+      properties:
+        error: { type: string, example: Invalid input. }
+      required: [error]
+    ExternalError:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        message: { type: string, example: Search query is required. }
+      required: [success, message]
+    User:
+      type: object
+      properties:
+        user_id: { type: integer, example: 1 }
+        name: { type: string, maxLength: 100, example: Demo User }
+        email: { type: string, format: email, maxLength: 150, example: demo@example.com }
+        created_at: { type: string, format: date-time }
+      required: [user_id, name, email]
+    UserRegistration:
+      type: object
+      required: [action, name, email, password]
+      properties:
+        action: { type: string, enum: [register] }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        email: { type: string, format: email, maxLength: 150 }
+        password: { type: string, minLength: 8, format: password }
+    UserLogin:
+      type: object
+      required: [action, email, password]
+      properties:
+        action: { type: string, enum: [login] }
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+    UserUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        email: { type: string, format: email, maxLength: 150 }
+        password: { type: string, minLength: 8, format: password }
+    Food:
+      type: object
+      properties:
+        food_id: { type: integer }
+        name: { type: string, maxLength: 150 }
+        calories_per_100g: { type: number, format: double }
+        protein_per_100g: { type: number, format: double }
+        carbohydrates_per_100g: { type: number, format: double }
+        fat_per_100g: { type: number, format: double }
+        created_at: { type: string, format: date-time, nullable: true }
+    FoodInput:
+      type: object
+      required: [name, calories_per_100g]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 150 }
+        calories_per_100g: { type: number, minimum: 0 }
+        protein_per_100g: { type: number, minimum: 0, default: 0 }
+        carbohydrates_per_100g: { type: number, minimum: 0, default: 0 }
+        fat_per_100g: { type: number, minimum: 0, default: 0 }
+    FoodUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 150 }
+        calories_per_100g: { type: number, minimum: 0 }
+        protein_per_100g: { type: number, minimum: 0 }
+        carbohydrates_per_100g: { type: number, minimum: 0 }
+        fat_per_100g: { type: number, minimum: 0 }
+    Meal:
+      type: object
+      properties:
+        meal_id: { type: integer }
+        user_id: { type: integer }
+        meal_date: { type: string, format: date }
+        meal_type: { type: string, enum: [breakfast, lunch, dinner, snack] }
+    MealInput:
+      type: object
+      required: [user_id, meal_date, meal_type]
+      properties:
+        user_id: { type: integer, minimum: 1 }
+        meal_date: { type: string, format: date, example: '2026-11-20' }
+        meal_type: { type: string, enum: [breakfast, lunch, dinner, snack] }
+    MealUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        user_id: { type: integer, minimum: 1 }
+        meal_date: { type: string, format: date }
+        meal_type: { type: string, enum: [breakfast, lunch, dinner, snack] }
+    MealEntry:
+      type: object
+      properties:
+        entry_id: { type: integer }
+        meal_id: { type: integer }
+        food_id: { type: integer }
+        serving_grams: { type: number, format: double }
+        food_name: { type: string }
+        calories_per_100g: { type: number, format: double }
+    MealEntryInput:
+      type: object
+      required: [meal_id, food_id, serving_grams]
+      properties:
+        meal_id: { type: integer, minimum: 1 }
+        food_id: { type: integer, minimum: 1 }
+        serving_grams: { type: number, exclusiveMinimum: true, minimum: 0 }
+    MealEntryUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        meal_id: { type: integer, minimum: 1 }
+        food_id: { type: integer, minimum: 1 }
+        serving_grams: { type: number, minimum: 0 }
+    DailySummary:
+      type: object
+      properties:
+        summary_id: { type: integer }
+        user_id: { type: integer }
+        summary_date: { type: string, format: date }
+        total_calories: { type: number, format: double }
+    DailySummaryInput:
+      type: object
+      required: [user_id, summary_date]
+      properties:
+        user_id: { type: integer, minimum: 1 }
+        summary_date: { type: string, format: date }
+        total_calories: { type: number, minimum: 0, default: 0 }
+    DailySummaryUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        user_id: { type: integer, minimum: 1 }
+        summary_date: { type: string, format: date }
+        total_calories: { type: number, minimum: 0 }
+    NutritionGoal:
+      type: object
+      properties:
+        goal_id: { type: integer }
+        user_id: { type: integer }
+        goal_type: { type: string, enum: [daily_calories, daily_protein] }
+        target_value: { type: number, format: double }
+    NutritionGoalInput:
+      type: object
+      required: [user_id, goal_type, target_value]
+      properties:
+        user_id: { type: integer, minimum: 1 }
+        goal_type: { type: string, enum: [daily_calories, daily_protein] }
+        target_value: { type: number, exclusiveMinimum: true, minimum: 0 }
+    NutritionGoalUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        user_id: { type: integer, minimum: 1 }
+        goal_type: { type: string, enum: [daily_calories, daily_protein] }
+        target_value: { type: number, minimum: 0 }
+    ExternalFood:
+      type: object
+      properties:
+        fdc_id: { type: integer, nullable: true }
+        name: { type: string }
+        data_type: { type: string, nullable: true }
+        calories: { type: number, nullable: true }
+        protein: { type: number, nullable: true }
+        carbohydrates: { type: number, nullable: true }
+        fat: { type: number, nullable: true }

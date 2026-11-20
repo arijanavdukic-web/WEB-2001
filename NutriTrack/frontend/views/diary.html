@@ -1,5 +1,6 @@
 
 <section class="container-fluid p-0">
+
     <div class="mb-4">
         <p class="text-success fw-semibold small mb-1">YOUR DAILY LOG</p>
         <h2 class="fw-bold mb-2">Meal Diary</h2>
@@ -7,65 +8,76 @@
     </div>
 
     <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body d-flex flex-wrap justify-content-between
-                    align-items-center gap-3">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
                 <h5 class="fw-bold mb-1">Daily food log</h5>
                 <p class="text-secondary small mb-0">Choose a date to review your meals.</p>
             </div>
+
             <input type="date" id="diaryDate"
                    class="form-control" style="max-width: 210px;">
         </div>
     </div>
 
+    <div id="diaryMessage" class="text-danger small mb-3"></div>
+
     <div class="row g-3 mb-4">
+
         <div class="col-12 col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <p class="text-secondary small mb-2">MEALS LOGGED</p>
-                    <h3 class="fw-bold mb-0">0</h3>
-                    <p class="text-secondary small mb-0">No meals added yet</p>
+                    <h3 class="fw-bold mb-0 diary-stat-value">0</h3>
+                    <p class="text-secondary small mb-0">Meals recorded</p>
                 </div>
             </div>
         </div>
+
         <div class="col-12 col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <p class="text-secondary small mb-2">FOODS LOGGED</p>
-                    <h3 class="fw-bold mb-0">0</h3>
-                    <p class="text-secondary small mb-0">Your entries will appear here</p>
+                    <h3 class="fw-bold mb-0 diary-stat-value">0</h3>
+                    <p class="text-secondary small mb-0">Food entries recorded</p>
                 </div>
             </div>
         </div>
+
         <div class="col-12 col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <p class="text-secondary small mb-2">DAILY OVERVIEW</p>
-                    <h3 class="fw-bold mb-0">Getting started</h3>
-                    <p class="text-secondary small mb-0">Add foods to see your nutrition</p>
+                    <p class="text-secondary small mb-2">DAILY CALORIES</p>
+                    <h3 class="fw-bold mb-0 diary-stat-value">0 kcal</h3>
+                    <p class="text-secondary small mb-0">Based on recorded food</p>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold mb-0">Today's meals</h5>
+        <h5 class="fw-bold mb-0">Daily meals</h5>
+
         <button class="btn btn-success" type="button" data-page="food-search">
             + Find food
         </button>
     </div>
 
     <div class="d-flex flex-column gap-3">
+
         <div class="card border-0 shadow-sm">
             <div class="card-body meal-row">
                 <div class="meal-icon">🌅</div>
                 <div class="flex-grow-1">
-                    <h5 class="fw-bold mb-1">Breakfast</h5>
-                    <p class="text-secondary small mb-0">Start your day</p>
-                    <p class="text-secondary small mt-2 mb-0">No foods added yet.</p>
+                    <h5 class="fw-bold mb-2">Breakfast</h5>
+                    <div id="diary-breakfast">
+                        <p class="text-secondary small mb-0">Loading...</p>
+                    </div>
                 </div>
                 <button class="btn btn-outline-success"
-                        type="button" data-page="food-search">Add food</button>
+                        type="button" data-page="food-search">
+                    Add food
+                </button>
             </div>
         </div>
 
@@ -73,12 +85,15 @@
             <div class="card-body meal-row">
                 <div class="meal-icon">☀️</div>
                 <div class="flex-grow-1">
-                    <h5 class="fw-bold mb-1">Lunch</h5>
-                    <p class="text-secondary small mb-0">Your midday meal</p>
-                    <p class="text-secondary small mt-2 mb-0">No foods added yet.</p>
+                    <h5 class="fw-bold mb-2">Lunch</h5>
+                    <div id="diary-lunch">
+                        <p class="text-secondary small mb-0">Loading...</p>
+                    </div>
                 </div>
                 <button class="btn btn-outline-success"
-                        type="button" data-page="food-search">Add food</button>
+                        type="button" data-page="food-search">
+                    Add food
+                </button>
             </div>
         </div>
 
@@ -86,26 +101,35 @@
             <div class="card-body meal-row">
                 <div class="meal-icon">🌙</div>
                 <div class="flex-grow-1">
-                    <h5 class="fw-bold mb-1">Dinner</h5>
-                    <p class="text-secondary small mb-0">Your evening meal</p>
-                    <p class="text-secondary small mt-2 mb-0">No foods added yet.</p>
+                    <h5 class="fw-bold mb-2">Dinner</h5>
+                    <div id="diary-dinner">
+                        <p class="text-secondary small mb-0">Loading...</p>
+                    </div>
                 </div>
                 <button class="btn btn-outline-success"
-                        type="button" data-page="food-search">Add food</button>
+                        type="button" data-page="food-search">
+                    Add food
+                </button>
             </div>
         </div>
 
         <div class="card border-0 shadow-sm">
             <div class="card-body meal-row">
-                <div class="meal-icon">🍐</div>
+                <div class="meal-icon">🍎</div>
                 <div class="flex-grow-1">
-                    <h5 class="fw-bold mb-1">Snacks</h5>
-                    <p class="text-secondary small mb-0">Between-meal foods</p>
-                    <p class="text-secondary small mt-2 mb-0">No foods added yet.</p>
+                    <h5 class="fw-bold mb-2">Snack</h5>
+                    <div id="diary-snack">
+                        <p class="text-secondary small mb-0">Loading...</p>
+                    </div>
                 </div>
                 <button class="btn btn-outline-success"
-                        type="button" data-page="food-search">Add food</button>
+                        type="button" data-page="food-search">
+                    Add food
+                </button>
             </div>
         </div>
+
     </div>
+    <div id="diaryMacroStats"></div>
+
 </section>

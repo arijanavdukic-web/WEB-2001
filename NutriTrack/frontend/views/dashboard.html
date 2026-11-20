@@ -1,72 +1,136 @@
 
 <section class="container-fluid p-0">
 
-    <div class="d-flex flex-wrap justify-content-between
-                align-items-center gap-3 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <p class="text-success fw-semibold small mb-1">
-                YOUR NUTRITION SPACE
-            </p>
+            <p class="text-success fw-semibold small mb-1">YOUR NUTRITION SPACE</p>
             <h2 class="fw-bold mb-1">Dashboard</h2>
-            <p class="text-secondary mb-0">
-                Your food diary and nutrition overview.
-            </p>
+            <p class="text-secondary mb-0">Your food diary and nutrition overview.</p>
         </div>
 
-        <button type="button" class="btn btn-success"
-                data-page="food-search">
+        <button type="button" class="btn btn-success" data-page="food-search">
             + Add food
         </button>
     </div>
 
+    <div id="dashboardMessage" class="small mb-3"></div>
+
     <div class="row g-3 mb-4">
 
-        <div class="col-12 col-md-6">
-            <div class="card shadow-sm h-100">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <p class="text-secondary mb-2">Food diary</p>
-                    <h4 class="fw-bold">Your daily meals</h4>
-                    <p class="text-secondary">
-                        Keep your meals organized in one place.
-                    </p>
-                    <button type="button"
-                            class="btn btn-outline-success"
-                            data-page="diary">
-                        Open diary
-                    </button>
+                    <p class="text-secondary small mb-2">DAILY CALORIES</p>
+                    <h3 class="fw-bold" id="dashboardCalories">0 kcal</h3>
+                    <p class="text-secondary small mb-0">Today's intake</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-12 col-md-6">
-            <div class="card shadow-sm h-100">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <p class="text-secondary mb-2">Food database</p>
-                    <h4 class="fw-bold">Explore foods</h4>
-                    <p class="text-secondary">
-                        Find foods and learn about their nutrients.
-                    </p>
-                    <button type="button"
-                            class="btn btn-outline-success"
-                            data-page="food-search">
-                        Search foods
-                    </button>
+                    <p class="text-secondary small mb-2">MEALS LOGGED</p>
+                    <h3 class="fw-bold" id="dashboardMeals">0</h3>
+                    <p class="text-secondary small mb-0">Today's meals</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-2">FOODS LOGGED</p>
+                    <h3 class="fw-bold" id="dashboardFoods">0</h3>
+                    <p class="text-secondary small mb-0">Food entries</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-2">PROTEIN</p>
+                    <h3 class="fw-bold" id="dashboardProtein">0 g</h3>
+                    <p class="text-secondary small mb-0">Today's protein</p>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
-            <h5 class="fw-bold mb-2">Getting started</h5>
-            <p class="text-secondary mb-0">
-                Search for a food, explore its nutritional
-                information, and add it to your meal diary.
-                Your entries and history will be developed
-                in the next stages.
-            </p>
+            <h5 class="fw-bold mb-3">Daily nutrition overview</h5>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <p class="text-secondary small mb-1">Carbohydrates</p>
+                    <h5 class="fw-bold" id="dashboardCarbs">0 g</h5>
+                </div>
+
+                <div class="col-6">
+                    <p class="text-secondary small mb-1">Fat</p>
+                    <h5 class="fw-bold" id="dashboardFat">0 g</h5>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0">Today's meals</h5>
+
+        <button class="btn btn-outline-success btn-sm" data-page="diary">
+            Open diary
+        </button>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">🌅 Breakfast</h5>
+                    <div id="dashboard-breakfast">
+                        <p class="text-secondary small">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">☀️ Lunch</h5>
+                    <div id="dashboard-lunch">
+                        <p class="text-secondary small">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">🌙 Dinner</h5>
+                    <div id="dashboard-dinner">
+                        <p class="text-secondary small">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">🍎 Snack</h5>
+                    <div id="dashboard-snack">
+                        <p class="text-secondary small">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </section>

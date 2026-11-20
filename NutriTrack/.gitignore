@@ -24,3 +24,6 @@ temp/
 
 
 /backend/config/config.php
+
+# SSL certificates
+/backend/config/certificates/
