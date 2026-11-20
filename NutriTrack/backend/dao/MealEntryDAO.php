@@ -23,13 +23,16 @@ class MealEntryDAO extends BaseDAO
     public function getByMealId(int $mealId): array
     {
         $sql = "SELECT
-                    meal_entries.*,
-                    foods.name AS food_name,
-                    foods.calories_per_100g
-                FROM meal_entries
-                INNER JOIN foods
-                    ON meal_entries.food_id = foods.food_id
-                WHERE meal_entries.meal_id = :meal_id";
+            meal_entries.*,
+            foods.name AS food_name,
+            foods.calories_per_100g,
+            foods.protein_per_100g,
+            foods.carbohydrates_per_100g,
+            foods.fat_per_100g
+        FROM meal_entries
+        INNER JOIN foods
+            ON meal_entries.food_id = foods.food_id
+        WHERE meal_entries.meal_id = :meal_id";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['meal_id' => $mealId]);
